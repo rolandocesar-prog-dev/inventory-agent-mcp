@@ -83,7 +83,7 @@ export function movementTools(
             `Movimiento preparado, todavía SIN registrar: ${describeMovement(pending)}.`,
             `Stock: ${pending.stockBefore} → ${pending.stockAfter}.`,
             reason ? `Motivo: ${reason}.` : 'Sin motivo.',
-            `Pide la aprobación del usuario y, si acepta, llama a ${CONFIRM_TOOL} con el código ${code} (vence en 5 minutos).`,
+            `Para registrarlo hace falta la aprobación de la persona: llama a ${CONFIRM_TOOL} con el código ${code} (vence en 5 minutos). Si tu cliente no le pide la aprobación por sí mismo, pregúntale antes.`,
           ].join('\n'),
           data: { code, ...pending },
         };

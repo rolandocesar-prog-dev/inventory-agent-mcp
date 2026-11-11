@@ -5,6 +5,7 @@ import { createFakeInventory } from '../../test/support/setup.js';
 import { createInventoryServer, createTools } from '../server/create-server.js';
 import {
   Agent,
+  ALREADY_RESOLVED,
   LIMIT_REACHED,
   MAX_TOOL_CALLS,
   NOT_APPROVED,
@@ -49,7 +50,6 @@ const tools =
   (): ChatReply => ({ content: '', toolCalls: calls });
 const lastTool = (history: ChatMessage[]) =>
   [...history].reverse().find((m) => m.role === 'tool')?.content ?? '';
-const codeIn = (text: string) => /código ([A-Z2-9]{6})/.exec(text)?.[1] ?? '';
 
 describe('Agent', () => {
   let api: FakeInventoryApi;
@@ -101,8 +101,8 @@ describe('Agent', () => {
     });
   });
 
-  it('pide aprobación con el resumen y registra si la persona acepta', async () => {
-    const { agent, approver } = await agentWith([
+  it('al preparar, el sistema pide la aprobación una sola vez y registra', async () => {
+    const { agent, approver, model } = await agentWith([
       tools(
         call('prepare_stock_movement', {
           type: 'out',
@@ -110,8 +110,6 @@ describe('Agent', () => {
           quantity: 3,
         }),
       ),
-      (h) =>
-        tools(call('confirm_stock_movement', { code: codeIn(lastTool(h)) }))(),
       say('Listo, registré la venta.'),
     ]);
 
@@ -123,14 +121,17 @@ describe('Agent', () => {
       'Salida de 3 × MART-001 · Martillo de carpintero 16 oz',
     );
     expect(approver.requests[0]?.summary).toContain('Stock: 18 → 15.');
-    expect(reply.trace.at(-1)).toMatchObject({
-      tool: 'confirm_stock_movement',
-      approved: true,
-      isError: false,
-    });
+    expect(reply.trace.map((t) => [t.tool, t.approved])).toEqual([
+      ['prepare_stock_movement', undefined],
+      ['confirm_stock_movement', true],
+    ]);
+    // El modelo ve el resultado completo y la indicación de no volver a confirmar.
+    expect(lastTool(model.seen[1] ?? [])).toContain(
+      'La persona aprobó y quedó registrado. Registrado: Salida de 3 × MART-001',
+    );
   });
 
-  it('si la persona no aprueba, no llama a la herramienta ni cambia el stock', async () => {
+  it('si la persona no aprueba, no se llama a confirmar ni cambia el stock', async () => {
     const { agent, model } = await agentWith(
       [
         tools(
@@ -140,10 +141,6 @@ describe('Agent', () => {
             quantity: 3,
           }),
         ),
-        (h) =>
-          tools(
-            call('confirm_stock_movement', { code: codeIn(lastTool(h)) }),
-          )(),
         say('Entendido, no registré nada.'),
       ],
       false,
@@ -156,10 +153,67 @@ describe('Agent', () => {
     expect(
       api.calls.slice(before).some((c) => c.startsWith('POST /stock')),
     ).toBe(false);
-    expect(reply.trace.at(-1)).toMatchObject({ approved: false });
-    expect(lastTool(model.seen[2] ?? [])).toBe(NOT_APPROVED);
+    expect(reply.trace.at(-1)).toMatchObject({
+      tool: 'confirm_stock_movement',
+      approved: false,
+    });
+    expect(lastTool(model.seen[1] ?? [])).toContain(NOT_APPROVED);
   });
 
+  it('si el modelo intenta confirmar un movimiento ya resuelto, no pregunta de nuevo', async () => {
+    let code = '';
+    const { agent, approver, model } = await agentWith([
+      tools(
+        call('prepare_stock_movement', {
+          type: 'in',
+          sku: 'MART-001',
+          quantity: 1,
+        }),
+      ),
+      say('Listo.'),
+      () => tools(call('confirm_stock_movement', { code }))(),
+      say('Ya estaba registrado.'),
+    ]);
+
+    const first = await agent.send('Llegó 1 martillo');
+    code = String(first.trace[1]?.args['code']);
+    const second = await agent.send('Confírmalo de nuevo');
+
+    expect(approver.requests).toHaveLength(1);
+    expect(stockOf('MART-001')).toBe(19);
+    expect(second.trace).toEqual([
+      { tool: 'confirm_stock_movement', args: { code }, isError: false },
+    ]);
+    expect(lastTool(model.seen[3] ?? [])).toBe(ALREADY_RESOLVED);
+  });
+  it('si la persona aprueba pero la API rechaza, el modelo recibe el motivo', async () => {
+    const { agent, model } = await agentWith([
+      tools(
+        call('prepare_stock_movement', {
+          type: 'out',
+          sku: 'CAB-25-100',
+          quantity: 1,
+        }),
+      ),
+      say('No se pudo.'),
+    ]);
+    const cable = api.products.find((p) => p.sku === 'CAB-25-100');
+    // Otra persona vende el último cable mientras se aprueba.
+    const approverSpy = (
+      agent as unknown as { approver: { approve: () => Promise<boolean> } }
+    ).approver;
+    approverSpy.approve = () => {
+      if (cable) cable.stock = 0;
+      return Promise.resolve(true);
+    };
+
+    const reply = await agent.send('Vendí 1 cable');
+
+    expect(reply.trace.at(-1)).toMatchObject({ approved: true, isError: true });
+    expect(lastTool(model.seen[1] ?? [])).toContain(
+      'La persona aprobó, pero no se pudo registrar',
+    );
+  });
   it('pide aprobación aunque el modelo invente un código (sin resumen)', async () => {
     const { agent, approver } = await agentWith([
       tools(call('confirm_stock_movement', { code: 'ZZZZZZ' })),
@@ -173,6 +227,17 @@ describe('Agent', () => {
       args: { code: 'ZZZZZZ' },
     });
     expect(reply.trace[0]).toMatchObject({ approved: true, isError: true });
+  });
+
+  it('si el modelo confirma por su cuenta y la persona no aprueba, no se registra', async () => {
+    const { agent } = await agentWith(
+      [tools(call('confirm_stock_movement', { code: 'ABC234' })), say('Ok.')],
+      false,
+    );
+
+    const reply = await agent.send('Confirma ABC234');
+
+    expect(reply.trace[0]).toMatchObject({ approved: false, isError: false });
   });
 
   it('una herramienta inexistente vuelve como error al modelo', async () => {
