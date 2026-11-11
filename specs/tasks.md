@@ -16,7 +16,7 @@ Cada tarea referencia su requisito. Marca `[x]` al terminar y haz un commit por 
 ## M2 · Servidor MCP (RF-02, RF-03, RNF-02)
 
 - [x] Herramientas de consulta: buscar, detalle por SKU, stock bajo y kardex.
-- [ ] Confirmaciones de un solo uso con vencimiento.
+- [x] Confirmaciones de un solo uso con vencimiento.
 - [ ] `prepare_stock_movement` y `confirm_stock_movement`.
 - [ ] Servidor MCP por stdio con anotaciones; prueba de integración con un cliente MCP real.
 
