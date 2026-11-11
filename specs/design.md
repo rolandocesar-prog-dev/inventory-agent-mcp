@@ -100,6 +100,12 @@ con `AGENT_MODEL`; la evaluación (§6) compara los dos.
   - Hallazgo que motivó el cambio (2026-11-11): con la aprobación solo antes de
     `confirm_stock_movement`, `qwen3.5:9b` pedía confirmación en el chat aunque el prompt dijera
     que no; la persona tenía que aprobar dos veces.
+  - El mensaje que recibe el modelo empieza por el **resultado** («RESULTADO: la persona aprobó y
+    quedó registrado…» o «RESULTADO: la persona RECHAZÓ…») y después el resumen. Con el resumen
+    primero, `qwen3.5:9b` leía «todavía SIN registrar» y ofrecía confirmar de nuevo un movimiento
+    rechazado (hallazgo de la demo, 2026-11-11).
+  - La CLI muestra cada llamada a herramienta **en el momento** (`onTrace`), antes de la pregunta
+    de aprobación, para que se entienda qué se está aprobando.
   - **Defensa en profundidad**: si el modelo llama por su cuenta a una herramienta con
     `destructiveHint`, también pasa por el `Approver` (con el resumen guardado si conoce el código).
   - La evaluación usa un `Approver` programado.
