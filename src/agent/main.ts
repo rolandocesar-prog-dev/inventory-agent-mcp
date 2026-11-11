@@ -32,6 +32,7 @@ try {
     connection,
     terminalApprover(input),
   );
+  agent.onTrace = (entry) => stdout.write(`${traceLine(entry)}\n`);
   const tools = await agent.init();
   stdout.write(
     `Agente de inventario · modelo ${config.model} · ${tools.length} herramientas por MCP.\nEscribe tu pedido o «salir».\n`,
@@ -43,7 +44,6 @@ try {
     if (!text.trim()) continue;
     try {
       const reply = await agent.send(text);
-      for (const entry of reply.trace) stdout.write(`${traceLine(entry)}\n`);
       stdout.write(`\n${reply.text}\n`);
     } catch (error) {
       stdout.write(`\n✖ ${message(error)}\n`);

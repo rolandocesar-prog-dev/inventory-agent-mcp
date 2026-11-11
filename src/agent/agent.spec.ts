@@ -128,7 +128,7 @@ describe('Agent', () => {
     ]);
     // El modelo ve el resultado completo y la indicación de no volver a confirmar.
     expect(lastTool(model.seen[1] ?? [])).toContain(
-      'La persona aprobó y quedó registrado. Registrado: Salida de 3 × MART-001',
+      'RESULTADO: la persona aprobó y quedó registrado. Registrado: Salida de 3 × MART-001',
     );
   });
 
@@ -212,7 +212,7 @@ describe('Agent', () => {
 
     expect(reply.trace.at(-1)).toMatchObject({ approved: true, isError: true });
     expect(lastTool(model.seen[1] ?? [])).toContain(
-      'La persona aprobó, pero no se pudo registrar',
+      'RESULTADO: la persona aprobó, pero no se pudo registrar',
     );
   });
   it('pide aprobación aunque el modelo invente un código (sin resumen)', async () => {
@@ -281,6 +281,36 @@ describe('Agent', () => {
 
     expect(reply.trace).toHaveLength(MAX_TOOL_CALLS);
     expect(reply.limitReached).toBe(true);
+  });
+
+  it('onTrace avisa cada llamada en el momento, antes de pedir aprobación', async () => {
+    const events: string[] = [];
+    const model = new ScriptedModel([
+      tools(
+        call('prepare_stock_movement', {
+          type: 'in',
+          sku: 'MART-001',
+          quantity: 1,
+        }),
+      ),
+      say('Listo.'),
+    ]);
+    const agent = new Agent(model, connection, {
+      approve: () => {
+        events.push('aprobación');
+        return Promise.resolve(true);
+      },
+    });
+    agent.onTrace = (entry) => events.push(entry.tool);
+    await agent.init();
+
+    await agent.send('Llegó un martillo');
+
+    expect(events).toEqual([
+      'prepare_stock_movement',
+      'aprobación',
+      'confirm_stock_movement',
+    ]);
   });
 
   it('el prompt de sistema incluye la fecha de hoy', async () => {

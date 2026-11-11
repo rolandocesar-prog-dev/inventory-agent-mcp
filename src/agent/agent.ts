@@ -46,7 +46,7 @@ export function localDate(date: Date): string {
 }
 
 export const NOT_APPROVED =
-  'La persona NO aprobó el movimiento: no se registró nada. Pregúntale si quiere cambiar algo.';
+  'RESULTADO: la persona RECHAZÓ el movimiento. No se registró nada y no queda nada pendiente: no ofrezcas confirmarlo. Si quiere, puede pedir otro movimiento.';
 export const ALREADY_RESOLVED =
   'Ese movimiento ya se resolvió con la persona (registrado o rechazado); no hace falta confirmarlo.';
 export const LIMIT_REACHED = `Llegué al límite de ${MAX_TOOL_CALLS} consultas para este pedido. ¿Puedes dividirlo en pedidos más simples?`;
@@ -60,6 +60,8 @@ export class Agent {
   private readonly history: ChatMessage[];
   /** Códigos cuya aprobación ya se resolvió (aprobados o rechazados). */
   private readonly resolved = new Set<string>();
+  /** Se llama con cada llamada a herramienta en el momento en que ocurre. */
+  onTrace?: (entry: TraceEntry) => void;
 
   constructor(
     private readonly model: ChatModel,
@@ -103,11 +105,13 @@ export class Agent {
           });
           continue;
         }
-        trace.push(
-          ...(await this.execute(
-            call.function.name,
-            call.function.arguments ?? {},
-          )),
+        await this.execute(
+          call.function.name,
+          call.function.arguments ?? {},
+          (entry) => {
+            trace.push(entry);
+            this.onTrace?.(entry);
+          },
         );
       }
       if (trace.length >= MAX_TOOL_CALLS) {
@@ -120,26 +124,31 @@ export class Agent {
   private async execute(
     name: string,
     args: Record<string, unknown>,
-  ): Promise<TraceEntry[]> {
+    record: (entry: TraceEntry) => void,
+  ): Promise<void> {
     const tool = this.tools.find((t) => t.name === name);
     if (!tool) {
       this.reply(
         name,
         `La herramienta ${name} no existe. Usa solo las disponibles.`,
       );
-      return [{ tool: name, args, isError: true }];
+      record({ tool: name, args, isError: true });
+      return;
     }
-    if (tool.destructive) return [await this.destructiveByModel(name, args)];
+    if (tool.destructive) {
+      record(await this.destructiveByModel(name, args));
+      return;
+    }
 
     const outcome = await this.caller.callTool(name, args);
-    const entry: TraceEntry = { tool: name, args, isError: outcome.isError };
+    record({ tool: name, args, isError: outcome.isError });
     const code = outcome.data?.['code'];
     const confirmTool = this.tools.find(
       (t) => t.destructive && t.name === CONFIRM_TOOL,
     );
     if (typeof code !== 'string' || outcome.isError || !confirmTool) {
       this.reply(name, outcome.text);
-      return [entry];
+      return;
     }
 
     // La aprobación la pide el sistema al preparar, una sola vez (design §5).
@@ -152,35 +161,30 @@ export class Agent {
       summary,
     });
     if (!approved) {
-      this.reply(name, `${summary}\n${NOT_APPROVED}`);
-      return [
-        entry,
-        {
-          tool: confirmTool.name,
-          args: confirmArgs,
-          isError: false,
-          approved: false,
-        },
-      ];
+      this.reply(name, `${NOT_APPROVED}\nResumen rechazado: ${summary}`);
+      record({
+        tool: confirmTool.name,
+        args: confirmArgs,
+        isError: false,
+        approved: false,
+      });
+      return;
     }
     const confirmed = await this.caller.callTool(confirmTool.name, confirmArgs);
+    // El resultado va primero: con el resumen primero, el modelo leía «SIN registrar».
     this.reply(
       name,
       confirmed.isError
-        ? `${summary}\nLa persona aprobó, pero no se pudo registrar: ${confirmed.text}`
-        : `${summary}\nLa persona aprobó y quedó registrado. ${confirmed.text} No vuelvas a confirmar este movimiento.`,
+        ? `RESULTADO: la persona aprobó, pero no se pudo registrar: ${confirmed.text}\nResumen: ${summary}`
+        : `RESULTADO: la persona aprobó y quedó registrado. ${confirmed.text} No vuelvas a confirmar este movimiento.\nResumen aprobado: ${summary}`,
     );
-    return [
-      entry,
-      {
-        tool: confirmTool.name,
-        args: confirmArgs,
-        isError: confirmed.isError,
-        approved: true,
-      },
-    ];
+    record({
+      tool: confirmTool.name,
+      args: confirmArgs,
+      isError: confirmed.isError,
+      approved: true,
+    });
   }
-
   /** El modelo llamó por su cuenta a una herramienta destructiva: también se aprueba. */
   private async destructiveByModel(
     name: string,
