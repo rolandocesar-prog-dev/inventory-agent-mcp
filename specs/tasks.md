@@ -10,7 +10,7 @@ Cada tarea referencia su requisito. Marca `[x]` al terminar y haz un commit por 
 ## M1 · Cliente de la API de inventario (RF-01, RF-04)
 
 - [x] Configuración validada con zod (sin mostrar secretos).
-- [ ] `InventoryClient`: login, renovación ante 401 y errores RFC 9457 / red.
+- [x] `InventoryClient`: login, renovación ante 401 y errores RFC 9457 / red.
 - [ ] Operaciones: búsqueda, catálogo completo, kardex, entradas y salidas.
 
 ## M2 · Servidor MCP (RF-02, RF-03, RNF-02)
