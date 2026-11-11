@@ -17,8 +17,8 @@
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "lint": "oxlint --type-aware src/ test/",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\" \"eval/**/*.ts\"",
-    "format:check": "prettier --check \"src/**/*.ts\" \"test/**/*.ts\" \"eval/**/*.ts\"",
+    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\" \"test/**/*.ts\"",
     "test": "vitest run",
     "test:cov": "vitest run --coverage"
   },
