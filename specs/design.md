@@ -91,10 +91,18 @@ con `AGENT_MODEL`; la evaluación (§6) compara los dos.
   temperatura 0,2). Si el modelo pide herramientas, se ejecutan en orden y sus resultados vuelven
   como mensajes `tool`; se repite hasta una respuesta de texto o hasta **6 llamadas** por
   mensaje del usuario.
-- **Aprobación humana**: antes de llamar a una herramienta con `destructiveHint`, el bucle consulta
-  a un `Approver`. En la terminal muestra el resumen guardado del `prepare` correspondiente y
-  pregunta «¿Registrar? (s/n)». Si la respuesta no es «s», no se llama a la herramienta y el
-  modelo recibe «El usuario no aprobó el movimiento». La evaluación usa un `Approver` programado.
+- **Aprobación humana, decidida por el sistema y no por el modelo**: cuando
+  `prepare_stock_movement` devuelve un código, el agente muestra de inmediato el resumen **del
+  servidor** y pregunta «¿Registrar? (s/n)». Si la persona aprueba, **el agente** llama a
+  `confirm_stock_movement`; si no, no se llama. El modelo recibe el resultado del `prepare` junto
+  con lo que pasó («quedó registrado…» o «la persona no aprobó…»). Así hay una sola pregunta y el
+  modelo nunca decide registrar.
+  - Hallazgo que motivó el cambio (2026-11-11): con la aprobación solo antes de
+    `confirm_stock_movement`, `qwen3.5:9b` pedía confirmación en el chat aunque el prompt dijera
+    que no; la persona tenía que aprobar dos veces.
+  - **Defensa en profundidad**: si el modelo llama por su cuenta a una herramienta con
+    `destructiveHint`, también pasa por el `Approver` (con el resumen guardado si conoce el código).
+  - La evaluación usa un `Approver` programado.
 - Prompt de sistema: asistente de inventario de un comercio, en español, que usa solo las
   herramientas, nunca inventa cifras, prepara antes de confirmar y explica los errores.
 

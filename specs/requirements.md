@@ -81,6 +81,8 @@ Criterios de aceptación en formato EARS.
   español con un modelo de Ollama configurable.
 - ANTES de ejecutar `confirm_stock_movement`, el agente DEBE mostrar el resumen al usuario y pedir
   su aprobación explícita (`s`/`n`). SI el usuario no aprueba, NO DEBE llamar a la herramienta.
+- La decisión de registrar DEBE depender solo de la aprobación de la persona, no del modelo, y la
+  persona NO DEBE tener que aprobar dos veces el mismo movimiento.
 - El agente DEBE limitar a 6 las llamadas a herramientas por mensaje del usuario y avisar si llega
   al límite.
 - SI el pedido no se puede hacer con las herramientas disponibles (p. ej. borrar un producto), el
