@@ -4,12 +4,21 @@ import {
   InventoryProblem,
   InventoryUnavailable,
 } from './errors.js';
-import type { TokenPair, User } from './types.js';
+import type { Movement, Page, Product, TokenPair, User } from './types.js';
 
 export type FetchFn = typeof fetch;
 
 /** Render gratuito puede tardar cerca de un minuto en despertar. */
 export const REQUEST_TIMEOUT_MS = 60_000;
+
+/** Máximo de la API para pageSize. */
+export const MAX_PAGE_SIZE = 100;
+
+export interface StockMovementInput {
+  productId: string;
+  quantity: number;
+  reason?: string;
+}
 
 type Query = Record<string, string | number | undefined>;
 
@@ -38,7 +47,48 @@ export class InventoryClient {
     return this.request<User>('GET', '/auth/me');
   }
 
-  protected async request<T>(
+  /** Productos activos cuyo nombre o SKU contiene `query`, ordenados por nombre. */
+  searchProducts(
+    query?: string,
+    page = 1,
+    pageSize = 20,
+  ): Promise<Page<Product>> {
+    return this.request<Page<Product>>('GET', '/products', {
+      query: { search: query || undefined, page, pageSize },
+    });
+  }
+
+  /** Todo el catálogo activo, recorriendo las páginas de 100. */
+  async listAllProducts(): Promise<Product[]> {
+    const products: Product[] = [];
+    for (let page = 1; ; page++) {
+      const result = await this.searchProducts(undefined, page, MAX_PAGE_SIZE);
+      products.push(...result.data);
+      if (page >= result.meta.totalPages) return products;
+    }
+  }
+
+  /** Kardex de un producto; `from` y `to` en AAAA-MM-DD (inclusivos). */
+  kardex(
+    productId: string,
+    from?: string,
+    to?: string,
+  ): Promise<Page<Movement>> {
+    return this.request<Page<Movement>>(
+      'GET',
+      `/products/${encodeURIComponent(productId)}/movements`,
+      { query: { from, to, pageSize: MAX_PAGE_SIZE } },
+    );
+  }
+
+  stockIn(movement: StockMovementInput): Promise<Movement> {
+    return this.request<Movement>('POST', '/stock/in', { body: movement });
+  }
+
+  stockOut(movement: StockMovementInput): Promise<Movement> {
+    return this.request<Movement>('POST', '/stock/out', { body: movement });
+  }
+  private async request<T>(
     method: string,
     path: string,
     options: RequestOptions = {},

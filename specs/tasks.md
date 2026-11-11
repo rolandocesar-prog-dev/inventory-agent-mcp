@@ -11,7 +11,7 @@ Cada tarea referencia su requisito. Marca `[x]` al terminar y haz un commit por 
 
 - [x] Configuración validada con zod (sin mostrar secretos).
 - [x] `InventoryClient`: login, renovación ante 401 y errores RFC 9457 / red.
-- [ ] Operaciones: búsqueda, catálogo completo, kardex, entradas y salidas.
+- [x] Operaciones: búsqueda, catálogo completo, kardex, entradas y salidas.
 
 ## M2 · Servidor MCP (RF-02, RF-03, RNF-02)
 
