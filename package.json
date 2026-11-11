@@ -20,7 +20,8 @@
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "format:check": "prettier --check \"src/**/*.ts\" \"test/**/*.ts\"",
     "test": "vitest run",
-    "test:cov": "vitest run --coverage"
+    "test:cov": "vitest run --coverage",
+    "eval": "npm run build && node dist/eval/main.js"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.32.2",
