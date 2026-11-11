@@ -1,0 +1,38 @@
+{
+  "name": "inventory-agent-mcp",
+  "version": "0.1.0",
+  "description": "Servidor MCP y agente de terminal para consultar y mover el inventario conversando en español, con confirmación humana de cada escritura.",
+  "author": "Rolando César Vásquez Tavera",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "bin": {
+    "inventory-mcp": "dist/server/main.js",
+    "inventory-agent": "dist/agent/main.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "lint": "oxlint --type-aware src/ test/",
+    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\" \"eval/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\" \"test/**/*.ts\" \"eval/**/*.ts\"",
+    "test": "vitest run",
+    "test:cov": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.5",
+    "@vitest/coverage-v8": "^5.1.0",
+    "oxlint": "^1.93.0",
+    "oxlint-tsgolint": "^7.0.2006",
+    "prettier": "^3.10.0",
+    "typescript": "^7.0.2",
+    "vitest": "^5.1.0"
+  }
+}

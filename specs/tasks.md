@@ -5,7 +5,7 @@ Cada tarea referencia su requisito. Marca `[x]` al terminar y haz un commit por 
 ## M0 · Base del proyecto
 
 - [x] Especificaciones SDD.
-- [ ] Proyecto TypeScript estricto (ESM, Node 22) con Vitest, oxlint, Prettier y CI.
+- [x] Proyecto TypeScript estricto (ESM, Node 22) con Vitest, oxlint, Prettier y CI.
 
 ## M1 · Cliente de la API de inventario (RF-01, RF-04)
 
