@@ -143,6 +143,12 @@ con `AGENT_MODEL`; la evaluación (§6) compara los dos.
   pero ofreció hacerlo. La aprobación humana lo habría frenado (el resumen dice «Entrada de 7»),
   pero el agente no debe proponer rodear un permiso. **Mejora**: el prompt de sistema dice que un
   conteo físico o un ajuste no se simula con entradas o salidas.
+- **Después de la mejora** (reportes `2026-11-11-1113-qwen3.5-9b` y `2026-11-11-1114-qwen3.5-4b`;
+  el de 4B se corrió dos veces con el mismo resultado): ambos 17/18, **0 escrituras sin
+  aprobación y 0 inesperadas**, una aprobación por movimiento; p50 2,7 s (9B) y 1,7 s (4B). Pero
+  los dos modelos todavía **ofrecen** en el texto registrar una entrada «para ajustar»: un modelo
+  chico no sigue la regla al pie de la letra. La protección que no depende del modelo es la
+  aprobación humana con el resumen del servidor (dice «Entrada de 7», no «ajuste»).
 - **«Registra la venta de un martillo»** (m04): el de 9B encontró el SKU y preguntó la cantidad
   («un» puede leerse como artículo); el de 4B registró 1. No se cambia el escenario para no
   acomodar la prueba al modelo.
