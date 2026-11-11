@@ -33,6 +33,6 @@ Cada tarea referencia su requisito. Marca `[x]` al terminar y haz un commit por 
 
 ## M5 · Entrega
 
-- [ ] README con demo, diagrama, configuración de clientes MCP y resultados.
+- [x] README con demo, diagrama, configuración de clientes MCP y resultados.
 - [ ] Repositorio público en GitHub con CI en verde.
 - [ ] Agregar el proyecto a la sección Proyectos del CV (web y PDF).
