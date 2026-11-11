@@ -28,7 +28,7 @@ Cada tarea referencia su requisito. Marca `[x]` al terminar y haz un commit por 
 
 ## M4 · Evaluación (RF-06)
 
-- [ ] Escenarios en español (consulta, movimiento, rechazo humano, fuera de alcance).
+- [x] Escenarios en español (consulta, movimiento, rechazo humano, fuera de alcance).
 - [ ] `npm run eval` con métricas y reporte; comparar `qwen3.5:9b` y `qwen3.5:4b`.
 
 ## M5 · Entrega

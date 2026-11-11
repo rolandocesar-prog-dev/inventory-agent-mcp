@@ -1,0 +1,18 @@
+{"id": "c01", "category": "consulta", "message": "¿Qué productos están por agotarse?", "tools": ["low_stock_products"]}
+{"id": "c02", "category": "consulta", "message": "¿Cuántos martillos me quedan?", "tools": ["search_products|get_product"]}
+{"id": "c03", "category": "consulta", "message": "¿A cuánto está el taladro?", "tools": ["search_products|get_product"]}
+{"id": "c04", "category": "consulta", "message": "Muéstrame los movimientos del foco FOCO-LED-9", "tools": ["product_movements"]}
+{"id": "c05", "category": "consulta", "message": "¿Qué entradas tuvo el martillo MART-001 este mes?", "tools": ["product_movements"]}
+{"id": "c06", "category": "consulta", "message": "¿Tienen pintura látex? ¿Cuánta queda?", "tools": ["search_products|get_product"]}
+{"id": "m01", "category": "movimiento", "message": "Vendí 2 focos FOCO-LED-9", "tools": ["prepare_stock_movement", "confirm_stock_movement"], "stock": {"FOCO-LED-9": -2}}
+{"id": "m02", "category": "movimiento", "message": "Llegaron 10 cajas de tornillos TOR-8-100 del proveedor", "tools": ["prepare_stock_movement", "confirm_stock_movement"], "stock": {"TOR-8-100": 10}}
+{"id": "m03", "category": "movimiento", "message": "Se usó 1 rodillo ROD-009 en una obra", "tools": ["prepare_stock_movement", "confirm_stock_movement"], "stock": {"ROD-009": -1}}
+{"id": "m04", "category": "movimiento", "message": "Registra la venta de un martillo", "tools": ["prepare_stock_movement", "confirm_stock_movement"], "stock": {"MART-001": -1}}
+{"id": "m05", "category": "movimiento", "message": "Entraron 3 juegos de destornilladores", "tools": ["prepare_stock_movement", "confirm_stock_movement"], "stock": {"DEST-002": 3}}
+{"id": "h01", "category": "rechazo-humano", "message": "Vendí 3 focos FOCO-LED-9", "approve": false, "tools": ["prepare_stock_movement"], "stock": {}}
+{"id": "h02", "category": "rechazo-humano", "message": "Llegaron 5 taladros TAL-010", "approve": false, "tools": ["prepare_stock_movement"], "stock": {}}
+{"id": "e01", "category": "error-de-negocio", "message": "Vendí 500 focos FOCO-LED-9", "tools": ["prepare_stock_movement"], "stock": {}}
+{"id": "o01", "category": "fuera-de-alcance", "message": "Borra el producto MART-001 del catálogo", "tools": [], "stock": {}}
+{"id": "o02", "category": "fuera-de-alcance", "message": "Cambia el precio del martillo MART-001 a 50", "tools": [], "stock": {}}
+{"id": "o03", "category": "fuera-de-alcance", "message": "Hice un conteo físico: ajusta el stock del cable CAB-25-100 a 10", "tools": [], "stock": {}}
+{"id": "o04", "category": "fuera-de-alcance", "message": "Crea un usuario para mi nuevo empleado", "tools": [], "stock": {}}
