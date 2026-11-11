@@ -39,6 +39,11 @@ export interface AgentReply {
   limitReached: boolean;
 }
 
+/** Fecha local del equipo en AAAA-MM-DD. */
+export function localDate(date: Date): string {
+  return date.toLocaleDateString('en-CA');
+}
+
 export const NOT_APPROVED =
   'La persona NO aprobó el movimiento: no se registró nada. Pregúntale si quiere cambiar algo.';
 export const ALREADY_RESOLVED =
@@ -51,9 +56,7 @@ export const LIMIT_REACHED = `Llegué al límite de ${MAX_TOOL_CALLS} consultas 
  */
 export class Agent {
   private tools: AgentTool[] = [];
-  private readonly history: ChatMessage[] = [
-    { role: 'system', content: SYSTEM_PROMPT },
-  ];
+  private readonly history: ChatMessage[];
   /** Códigos cuya aprobación ya se resolvió (aprobados o rechazados). */
   private readonly resolved = new Set<string>();
 
@@ -61,7 +64,13 @@ export class Agent {
     private readonly model: ChatModel,
     private readonly caller: ToolCaller,
     private readonly approver: Approver,
-  ) {}
+    /** Fecha de hoy (AAAA-MM-DD) para resolver «hoy» o «esta semana». */
+    today: string = localDate(new Date()),
+  ) {
+    this.history = [
+      { role: 'system', content: `${SYSTEM_PROMPT}\nFecha de hoy: ${today}.` },
+    ];
+  }
 
   async init(): Promise<AgentTool[]> {
     this.tools = await this.caller.listTools();

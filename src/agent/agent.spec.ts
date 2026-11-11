@@ -6,6 +6,7 @@ import { createInventoryServer, createTools } from '../server/create-server.js';
 import {
   Agent,
   ALREADY_RESOLVED,
+  localDate,
   LIMIT_REACHED,
   MAX_TOOL_CALLS,
   NOT_APPROVED,
@@ -280,6 +281,21 @@ describe('Agent', () => {
 
     expect(reply.trace).toHaveLength(MAX_TOOL_CALLS);
     expect(reply.limitReached).toBe(true);
+  });
+
+  it('el prompt de sistema incluye la fecha de hoy', async () => {
+    const model = new ScriptedModel([say('Hola')]);
+    const agent = new Agent(
+      model,
+      connection,
+      new StubApprover(true),
+      '2026-11-11',
+    );
+
+    await agent.send('Hola');
+
+    expect(model.seen[0]?.[0]?.content).toMatch(/Fecha de hoy: 2026-11-11\.$/);
+    expect(localDate(new Date(2026, 0, 5))).toBe('2026-01-05');
   });
 
   it('conserva la conversación entre mensajes', async () => {

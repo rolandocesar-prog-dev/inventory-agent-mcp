@@ -104,7 +104,9 @@ con `AGENT_MODEL`; la evaluación (§6) compara los dos.
     `destructiveHint`, también pasa por el `Approver` (con el resumen guardado si conoce el código).
   - La evaluación usa un `Approver` programado.
 - Prompt de sistema: asistente de inventario de un comercio, en español, que usa solo las
-  herramientas, nunca inventa cifras, prepara antes de confirmar y explica los errores.
+  herramientas, nunca inventa cifras, prepara antes de confirmar y explica los errores. Incluye
+  la **fecha de hoy** (del equipo, AAAA-MM-DD): sin ella el modelo inventaba fechas ante «¿qué
+  movimientos hubo hoy?» (hallazgo del 2026-11-11).
 
 ## 6. Evaluación (RF-06)
 
