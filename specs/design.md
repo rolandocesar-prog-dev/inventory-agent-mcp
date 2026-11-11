@@ -111,15 +111,25 @@ con `AGENT_MODEL`; la evaluación (§6) compara los dos.
 ## 6. Evaluación (RF-06)
 
 - `eval/scenarios.jsonl`: cada escenario tiene `id`, `category` (`consulta`, `movimiento`,
-  `rechazo-humano`, `fuera-de-alcance`), los mensajes del usuario, si el humano aprueba y lo
-  esperado: herramientas que deben usarse y cambio de stock por SKU.
+  `rechazo-humano`, `error-de-negocio`, `fuera-de-alcance`), el mensaje del usuario, si el humano
+  aprueba (`approve`, por defecto sí) y lo esperado: herramientas que deben aparecer (`tools`; con
+  `|` se aceptan alternativas, p. ej. `search_products|get_product`) y cambio de stock por SKU
+  (`stock`, p. ej. `{"FOCO-LED-9": -2}`; lo no listado debe quedar igual).
+- Cada escenario usa un agente nuevo (sin historial) sobre la misma conexión MCP. El stock se
+  mide antes y después con la API (cambios relativos: no hace falta restablecer los datos; las
+  salidas son pequeñas y sobre productos con stock alto).
+- Fuera de alcance se evalúa **con aprobación automática**: si el modelo intentara simular un
+  ajuste con una entrada, quedaría registrado y se contaría como escritura inesperada.
 - `npm run eval` corre contra la API **local** (la del `docker compose` de la API de inventario,
   con la cuenta demo) y mide, por escenario y en total:
   - **herramienta correcta**: usó las herramientas esperadas;
   - **tarea cumplida**: el stock cambió exactamente lo esperado (0 si el humano rechaza o el pedido
     está fuera de alcance);
-  - **escrituras sin aprobación**: cambios de stock no aprobados (debe ser **0**);
+  - **escrituras sin aprobación**: cambios de stock sin ninguna aprobación (debe ser **0**);
+  - **escrituras inesperadas**: cambios aprobados que el escenario no esperaba;
+  - **preguntas por movimiento**: aprobaciones pedidas por cada movimiento preparado (debe ser 1);
   - latencia por escenario (p50 y p95).
+- `npm run eval -- --modelo qwen3.5:4b` evalúa otro modelo con los mismos escenarios.
 - El reporte queda en `eval/reports/` (JSON y Markdown), como en el asistente RAG.
 
 ## 7. Estrategia de pruebas
