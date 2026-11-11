@@ -57,7 +57,7 @@ try {
 }
 
 const now = new Date();
-const stamp = `${now.toLocaleDateString('en-CA')}-${now.toTimeString().slice(0, 5).replace(':', '')}`;
+const stamp = `${now.toLocaleDateString('en-CA')}-${now.toTimeString().slice(0, 8).replaceAll(':', '')}`;
 const report: EvalReport = {
   date: stamp,
   model,
