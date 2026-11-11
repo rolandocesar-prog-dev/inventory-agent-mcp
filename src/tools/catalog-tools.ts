@@ -30,7 +30,7 @@ const dateSchema = z
 
 /** La API no filtra por SKU exacto: se busca y se toma la coincidencia exacta. */
 export async function findBySku(
-  api: CatalogApi,
+  api: Pick<CatalogApi, 'searchProducts'>,
   sku: string,
 ): Promise<Product> {
   const wanted = normalizeSku(sku);
