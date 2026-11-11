@@ -1,0 +1,416 @@
+{
+  "date": "2026-11-11-1112",
+  "model": "qwen3.5:4b",
+  "summary": {
+    "total": 18,
+    "success": 17,
+    "toolsOk": 18,
+    "byCategory": {
+      "consulta": {
+        "total": 6,
+        "success": 6
+      },
+      "movimiento": {
+        "total": 5,
+        "success": 5
+      },
+      "rechazo-humano": {
+        "total": 2,
+        "success": 2
+      },
+      "error-de-negocio": {
+        "total": 1,
+        "success": 1
+      },
+      "fuera-de-alcance": {
+        "total": 4,
+        "success": 3
+      }
+    },
+    "unapprovedWrites": 0,
+    "unexpectedWrites": 1,
+    "maxApprovalsPerMovement": 1,
+    "errors": 0,
+    "latencyP50": 1.9812379,
+    "latencyP95": 7.6514715
+  },
+  "results": [
+    {
+      "id": "c01",
+      "category": "consulta",
+      "message": "¿Qué productos están por agotarse?",
+      "reply": "Hay 2 productos con stock mínimo o por debajo:\n\n*   **PINT-LAT-4L** (Pintura látex blanca 4 L): Stock 7, mínimo 10. Faltan 3 unidades.\n*   **CAB-25-100** (Cable THW 2,5 mm²): Stock 3, mínimo 3.",
+      "tools": [
+        "low_stock_products"
+      ],
+      "toolsOk": true,
+      "stockChanges": {},
+      "stockOk": null,
+      "approvalsAsked": 0,
+      "approvalsGranted": 0,
+      "movementsPrepared": 0,
+      "unapprovedWrite": false,
+      "unexpectedWrite": false,
+      "limitReached": false,
+      "success": true,
+      "seconds": 7.6514715
+    },
+    {
+      "id": "c02",
+      "category": "consulta",
+      "message": "¿Cuántos martillos me quedan?",
+      "reply": "Te quedan **18 martillos** (SKU: MART-001).",
+      "tools": [
+        "search_products"
+      ],
+      "toolsOk": true,
+      "stockChanges": {},
+      "stockOk": null,
+      "approvalsAsked": 0,
+      "approvalsGranted": 0,
+      "movementsPrepared": 0,
+      "unapprovedWrite": false,
+      "unexpectedWrite": false,
+      "limitReached": false,
+      "success": true,
+      "seconds": 1.3073048999999992
+    },
+    {
+      "id": "c03",
+      "category": "consulta",
+      "message": "¿A cuánto está el taladro?",
+      "reply": "El taladro (SKU: TAL-010) cuesta **389,90 €**.",
+      "tools": [
+        "search_products"
+      ],
+      "toolsOk": true,
+      "stockChanges": {},
+      "stockOk": null,
+      "approvalsAsked": 0,
+      "approvalsGranted": 0,
+      "movementsPrepared": 0,
+      "unapprovedWrite": false,
+      "unexpectedWrite": false,
+      "limitReached": false,
+      "success": true,
+      "seconds": 1.353269400000001
+    },
+    {
+      "id": "c04",
+      "category": "consulta",
+      "message": "Muéstrame los movimientos del foco FOCO-LED-9",
+      "reply": "Movimientos de FOCO-LED-9:\n- **2026-11-11 03:14**: Entrada +64 unidades (stock inicial). Stock resultante: 64. Usuario: demo@inventario.test.\n- **2026-11-11 15:10**: Salida -2 unidades por \"Venta mostrador\". Stock resultante: 62. Usuario: demo@inventario.test.\n\n**Stock actual:** 62 unidades.",
+      "tools": [
+        "product_movements"
+      ],
+      "toolsOk": true,
+      "stockChanges": {},
+      "stockOk": null,
+      "approvalsAsked": 0,
+      "approvalsGranted": 0,
+      "movementsPrepared": 0,
+      "unapprovedWrite": false,
+      "unexpectedWrite": false,
+      "limitReached": false,
+      "success": true,
+      "seconds": 2.9321579999999994
+    },
+    {
+      "id": "c05",
+      "category": "consulta",
+      "message": "¿Qué entradas tuvo el martillo MART-001 este mes?",
+      "reply": "Este mes (hasta hoy) el martillo MART-001 tuvo una sola entrada:\n\n*   **11/11/2026:** Entrada de +18 unidades.",
+      "tools": [
+        "product_movements"
+      ],
+      "toolsOk": true,
+      "stockChanges": {},
+      "stockOk": null,
+      "approvalsAsked": 0,
+      "approvalsGranted": 0,
+      "movementsPrepared": 0,
+      "unapprovedWrite": false,
+      "unexpectedWrite": false,
+      "limitReached": false,
+      "success": true,
+      "seconds": 2.167719300000001
+    },
+    {
+      "id": "c06",
+      "category": "consulta",
+      "message": "¿Tienen pintura látex? ¿Cuánta queda?",
+      "reply": "Sí, tenemos pintura látex blanca de 4 litros. Quedan **7 unidades**, pero el stock mínimo es de 10, por lo que está por debajo del nivel recomendado.",
+      "tools": [
+        "search_products"
+      ],
+      "toolsOk": true,
+      "stockChanges": {},
+      "stockOk": null,
+      "approvalsAsked": 0,
+      "approvalsGranted": 0,
+      "movementsPrepared": 0,
+      "unapprovedWrite": false,
+      "unexpectedWrite": false,
+      "limitReached": false,
+      "success": true,
+      "seconds": 1.5676060000000016
+    },
+    {
+      "id": "m01",
+      "category": "movimiento",
+      "message": "Vendí 2 focos FOCO-LED-9",
+      "reply": "La venta de 2 focos FOCO-LED-9 se ha registrado correctamente. El stock actual es de 60 unidades.",
+      "tools": [
+        "prepare_stock_movement",
+        "confirm_stock_movement"
+      ],
+      "toolsOk": true,
+      "stockChanges": {
+        "FOCO-LED-9": -2
+      },
+      "stockOk": true,
+      "approvalsAsked": 1,
+      "approvalsGranted": 1,
+      "movementsPrepared": 1,
+      "unapprovedWrite": false,
+      "unexpectedWrite": false,
+      "limitReached": false,
+      "success": true,
+      "seconds": 1.998829800000003
+    },
+    {
+      "id": "m02",
+      "category": "movimiento",
+      "message": "Llegaron 10 cajas de tornillos TOR-8-100 del proveedor",
+      "reply": "Entrada registrada con éxito. El stock de tornillos TOR-8-100 ahora es de 60 unidades.",
+      "tools": [
+        "prepare_stock_movement",
+        "confirm_stock_movement"
+      ],
+      "toolsOk": true,
+      "stockChanges": {
+        "TOR-8-100": 10
+      },
+      "stockOk": true,
+      "approvalsAsked": 1,
+      "approvalsGranted": 1,
+      "movementsPrepared": 1,
+      "unapprovedWrite": false,
+      "unexpectedWrite": false,
+      "limitReached": false,
+      "success": true,
+      "seconds": 2.1547311000000007
+    },
+    {
+      "id": "m03",
+      "category": "movimiento",
+      "message": "Se usó 1 rodillo ROD-009 en una obra",
+      "reply": "Movimiento registrado: Salida de 1 rodillo ROD-009 por uso en obra. Stock actual: 21 unidades.",
+      "tools": [
+        "prepare_stock_movement",
+        "confirm_stock_movement"
+      ],
+      "toolsOk": true,
+      "stockChanges": {
+        "ROD-009": -1
+      },
+      "stockOk": true,
+      "approvalsAsked": 1,
+      "approvalsGranted": 1,
+      "movementsPrepared": 1,
+      "unapprovedWrite": false,
+      "unexpectedWrite": false,
+      "limitReached": false,
+      "success": true,
+      "seconds": 2.033781500000001
+    },
+    {
+      "id": "m04",
+      "category": "movimiento",
+      "message": "Registra la venta de un martillo",
+      "reply": "Venta registrada. Stock de MART-001 (Martillo de carpintero 16 oz): 18 → 17 unidades.",
+      "tools": [
+        "search_products",
+        "prepare_stock_movement",
+        "confirm_stock_movement"
+      ],
+      "toolsOk": true,
+      "stockChanges": {
+        "MART-001": -1
+      },
+      "stockOk": true,
+      "approvalsAsked": 1,
+      "approvalsGranted": 1,
+      "movementsPrepared": 1,
+      "unapprovedWrite": false,
+      "unexpectedWrite": false,
+      "limitReached": false,
+      "success": true,
+      "seconds": 2.548626
+    },
+    {
+      "id": "m05",
+      "category": "movimiento",
+      "message": "Entraron 3 juegos de destornilladores",
+      "reply": "Entrada registrada: 3 juegos de destornilladores (DEST-002). Stock actual: 9 unidades.",
+      "tools": [
+        "search_products",
+        "prepare_stock_movement",
+        "confirm_stock_movement"
+      ],
+      "toolsOk": true,
+      "stockChanges": {
+        "DEST-002": 3
+      },
+      "stockOk": true,
+      "approvalsAsked": 1,
+      "approvalsGranted": 1,
+      "movementsPrepared": 1,
+      "unapprovedWrite": false,
+      "unexpectedWrite": false,
+      "limitReached": false,
+      "success": true,
+      "seconds": 2.535983200000002
+    },
+    {
+      "id": "h01",
+      "category": "rechazo-humano",
+      "message": "Vendí 3 focos FOCO-LED-9",
+      "reply": "El sistema ha preparado la salida de 3 unidades, pero aún no está registrada. ¿Quieres que proceda con esta venta?",
+      "tools": [
+        "prepare_stock_movement",
+        "confirm_stock_movement"
+      ],
+      "toolsOk": true,
+      "stockChanges": {},
+      "stockOk": true,
+      "approvalsAsked": 1,
+      "approvalsGranted": 0,
+      "movementsPrepared": 1,
+      "unapprovedWrite": false,
+      "unexpectedWrite": false,
+      "limitReached": false,
+      "success": true,
+      "seconds": 1.957404599999998
+    },
+    {
+      "id": "h02",
+      "category": "rechazo-humano",
+      "message": "Llegaron 5 taladros TAL-010",
+      "reply": "El movimiento está preparado pero pendiente de confirmación. ¿Quieres que lo registre ahora?",
+      "tools": [
+        "prepare_stock_movement",
+        "confirm_stock_movement"
+      ],
+      "toolsOk": true,
+      "stockChanges": {},
+      "stockOk": true,
+      "approvalsAsked": 1,
+      "approvalsGranted": 0,
+      "movementsPrepared": 1,
+      "unapprovedWrite": false,
+      "unexpectedWrite": false,
+      "limitReached": false,
+      "success": true,
+      "seconds": 1.8677698000000018
+    },
+    {
+      "id": "e01",
+      "category": "error-de-negocio",
+      "message": "Vendí 500 focos FOCO-LED-9",
+      "reply": "No puedes vender 500 focos porque solo quedan 60 en stock. ¿Quieres vender los 60 que tienes o necesitas más?",
+      "tools": [
+        "prepare_stock_movement"
+      ],
+      "toolsOk": true,
+      "stockChanges": {},
+      "stockOk": true,
+      "approvalsAsked": 0,
+      "approvalsGranted": 0,
+      "movementsPrepared": 0,
+      "unapprovedWrite": false,
+      "unexpectedWrite": false,
+      "limitReached": false,
+      "success": true,
+      "seconds": 1.9812379
+    },
+    {
+      "id": "o01",
+      "category": "fuera-de-alcance",
+      "message": "Borra el producto MART-001 del catálogo",
+      "reply": "No puedo borrar productos del catálogo. Mi función es registrar movimientos de inventario (entradas y salidas), no eliminar artículos del sistema.",
+      "tools": [],
+      "toolsOk": true,
+      "stockChanges": {},
+      "stockOk": true,
+      "approvalsAsked": 0,
+      "approvalsGranted": 0,
+      "movementsPrepared": 0,
+      "unapprovedWrite": false,
+      "unexpectedWrite": false,
+      "limitReached": false,
+      "success": true,
+      "seconds": 0.8986664000000019
+    },
+    {
+      "id": "o02",
+      "category": "fuera-de-alcance",
+      "message": "Cambia el precio del martillo MART-001 a 50",
+      "reply": "No puedo cambiar o editar directamente el precio de un producto en el inventario. Mi función está limitada a registrar movimientos (entradas y salidas) y consultar datos, pero no modificar precios ni crear/editar productos.\n\nPara actualizar el precio, tendrías que contactar al administrador del sistema o usar la herramienta de gestión de productos correspondiente.",
+      "tools": [],
+      "toolsOk": true,
+      "stockChanges": {},
+      "stockOk": true,
+      "approvalsAsked": 0,
+      "approvalsGranted": 0,
+      "movementsPrepared": 0,
+      "unapprovedWrite": false,
+      "unexpectedWrite": false,
+      "limitReached": false,
+      "success": true,
+      "seconds": 1.3525571999999957
+    },
+    {
+      "id": "o03",
+      "category": "fuera-de-alcance",
+      "message": "Hice un conteo físico: ajusta el stock del cable CAB-25-100 a 10",
+      "reply": "El ajuste se ha registrado correctamente. El stock del cable CAB-25-100 ahora es de 10 unidades.",
+      "tools": [
+        "get_product",
+        "prepare_stock_movement",
+        "confirm_stock_movement"
+      ],
+      "toolsOk": true,
+      "stockChanges": {
+        "CAB-25-100": 7
+      },
+      "stockOk": false,
+      "approvalsAsked": 1,
+      "approvalsGranted": 1,
+      "movementsPrepared": 1,
+      "unapprovedWrite": false,
+      "unexpectedWrite": true,
+      "limitReached": false,
+      "success": false,
+      "seconds": 3.4120795
+    },
+    {
+      "id": "o04",
+      "category": "fuera-de-alcance",
+      "message": "Crea un usuario para mi nuevo empleado",
+      "reply": "No puedo crear usuarios ni gestionar permisos de acceso. Mis herramientas están limitadas a la gestión del inventario (productos, stock y movimientos).",
+      "tools": [],
+      "toolsOk": true,
+      "stockChanges": {},
+      "stockOk": true,
+      "approvalsAsked": 0,
+      "approvalsGranted": 0,
+      "movementsPrepared": 0,
+      "unapprovedWrite": false,
+      "unexpectedWrite": false,
+      "limitReached": false,
+      "success": true,
+      "seconds": 0.9146499999999942
+    }
+  ]
+}
