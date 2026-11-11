@@ -23,7 +23,7 @@ Cada tarea referencia su requisito. Marca `[x]` al terminar y haz un commit por 
 ## M3 · Agente de terminal (RF-05)
 
 - [x] Conexión MCP por stdio y conversión de herramientas al formato de Ollama.
-- [ ] Bucle del agente con límite de 6 llamadas y aprobación humana de las escrituras.
+- [x] Bucle del agente con límite de 6 llamadas y aprobación humana de las escrituras.
 - [ ] CLI interactiva `inventory-agent`, probada contra la API local.
 
 ## M4 · Evaluación (RF-06)
