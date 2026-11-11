@@ -130,6 +130,22 @@ con `AGENT_MODEL`; la evaluación (§6) compara los dos.
   - **preguntas por movimiento**: aprobaciones pedidas por cada movimiento preparado (debe ser 1);
   - latencia por escenario (p50 y p95).
 - `npm run eval -- --modelo qwen3.5:4b` evalúa otro modelo con los mismos escenarios.
+
+### Resultados y hallazgos (2026-11-11)
+
+| Reporte                      | Cumplidas | Herramienta | Sin aprobación | Inesperadas | p50   |
+| ---------------------------- | --------- | ----------- | -------------- | ----------- | ----- |
+| `2026-11-11-1111-qwen3.5-9b` | 17/18     | 17/18       | 0              | 0           | 3,1 s |
+| `2026-11-11-1112-qwen3.5-4b` | 17/18     | 18/18       | 0              | **1**       | 2,0 s |
+
+- **Ajuste simulado con una entrada** (o03, «ajusta el stock del cable a 10»): el de 4B preparó y
+  registró una entrada de 7 y respondió «el ajuste se ha registrado»; el de 9B no registró nada
+  pero ofreció hacerlo. La aprobación humana lo habría frenado (el resumen dice «Entrada de 7»),
+  pero el agente no debe proponer rodear un permiso. **Mejora**: el prompt de sistema dice que un
+  conteo físico o un ajuste no se simula con entradas o salidas.
+- **«Registra la venta de un martillo»** (m04): el de 9B encontró el SKU y preguntó la cantidad
+  («un» puede leerse como artículo); el de 4B registró 1. No se cambia el escenario para no
+  acomodar la prueba al modelo.
 - El reporte queda en `eval/reports/` (JSON y Markdown), como en el asistente RAG.
 
 ## 7. Estrategia de pruebas
