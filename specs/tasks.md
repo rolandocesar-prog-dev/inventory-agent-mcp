@@ -18,7 +18,7 @@ Cada tarea referencia su requisito. Marca `[x]` al terminar y haz un commit por 
 - [x] Herramientas de consulta: buscar, detalle por SKU, stock bajo y kardex.
 - [x] Confirmaciones de un solo uso con vencimiento.
 - [x] `prepare_stock_movement` y `confirm_stock_movement`.
-- [ ] Servidor MCP por stdio con anotaciones; prueba de integración con un cliente MCP real.
+- [x] Servidor MCP por stdio con anotaciones; prueba de integración con un cliente MCP real.
 
 ## M3 · Agente de terminal (RF-05)
 
