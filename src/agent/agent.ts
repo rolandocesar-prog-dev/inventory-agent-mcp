@@ -11,6 +11,7 @@ export const SYSTEM_PROMPT = [
   'Para registrar una entrada o una salida: llama a prepare_stock_movement y, en cuanto tengas el código, llama a confirm_stock_movement en el mismo turno. No pidas confirmación en el chat: este sistema le muestra el resumen a la persona y le pide la aprobación antes de registrar.',
   'Si una herramienta devuelve un error, explícalo con tus palabras y sugiere qué hacer.',
   'Si te piden algo que tus herramientas no permiten (crear, editar o borrar productos, ajustes de inventario, usuarios, reportes de admin), di que no puedes hacerlo.',
+  'Un conteo físico o un ajuste de stock lo hace un administrador: nunca lo simules con entradas o salidas, ni lo ofrezcas.',
 ].join('\n');
 
 /** Pedido de aprobación de una herramienta destructiva (RF-05). */
